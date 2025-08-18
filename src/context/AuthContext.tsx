@@ -9,7 +9,7 @@ interface CustomJwtPayload extends JwtPayload {
   user_id?: string;
   full_name?: string;
   email?: string;
-  role?: string;
+  role?: "admin" | "user";
   pfl?: boolean;
 }
 
@@ -73,11 +73,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // 🔹 Load user if token exists
   useEffect(() => {
     const loadUser = async () => {
       const token = await AsyncStorage.getItem("accessToken");
       if (token && !isTokenExpired(token)) {
-        setUserInfo(jwtDecode<CustomJwtPayload>(token));
+        const decoded = jwtDecode<CustomJwtPayload>(token);
+        setUserInfo(decoded);
         setIsAuthenticated(true);
       } else {
         handleLogout();
@@ -88,6 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadUser();
   }, []);
 
+  // 🔹 Register
   const register = async (data: any): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
@@ -115,6 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // 🔹 Login (send OTP)
   const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
@@ -149,6 +153,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // 🔹 Verify OTP → Save tokens & role
   const verifyOTP = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
@@ -162,14 +167,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (tokens.refresh_token) {
           await AsyncStorage.setItem("refreshToken", tokens.refresh_token);
         }
-        setUserInfo(jwtDecode<CustomJwtPayload>(tokens.token));
+
+        const decoded = jwtDecode<CustomJwtPayload>(tokens.token);
+        setUserInfo(decoded);
         setIsAuthenticated(true);
 
         Alert.alert("Success", "Login successful!");
+
+        // ✅ Reset navigation to correct stack based on role
         navigation.reset({
           index: 0,
-          routes: [{ name: "Dashboard" }],
+          routes: [
+            { name: decoded.role === "admin" ? "AdminDrawer" : "UserDrawer" }
+          ],
         });
+
         return { success: true, message: "Login successful!" };
       } else {
         throw new Error(data?.response ? JSON.stringify(data.response) : "Invalid OTP");
@@ -189,6 +201,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // 🔹 Resend OTP
   const loginCode = async ({ email }: { email: string }): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
@@ -215,6 +228,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // 🔹 Logout
   const handleLogout = async () => {
     setUserInfo(null);
     setIsAuthenticated(false);

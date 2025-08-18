@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Alert, Image } from "react-native";
-import { TextInput, Button, Text, useTheme } from "react-native-paper";
+import { TextInput, Button, Text } from "react-native-paper";
 import { useNavigation, useRoute, RouteProp, NavigationProp } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAuth } from "../context/AuthContext"; 
+import { useAuth } from "../context/AuthContext";
 import { RootStackParamList } from "../../types/navigation";
 
 type ConfirmOTPScreenRouteProp = RouteProp<RootStackParamList, "ConfirmOTP">;
@@ -12,21 +12,20 @@ type ConfirmOTPScreenNavProp = NavigationProp<RootStackParamList, "ConfirmOTP">;
 export default function ConfirmOTPScreen() {
   const [otp, setOtp] = useState("");
   const [countdown, setCountdown] = useState(30);
-  const theme = useTheme();
   const route = useRoute<ConfirmOTPScreenRouteProp>();
   const navigation = useNavigation<ConfirmOTPScreenNavProp>();
 
-  const { verifyOTP, loading, error, clearError, loginCode } = useAuth(); // ✅ use verifyOTP
+  const { verifyOTP, loading, error, clearError, loginCode } = useAuth();
 
   const emailParam = route.params?.email || "";
 
   useEffect(() => {
-    const timer =
-      countdown > 0 &&
-      setInterval(() => {
+    if (countdown > 0) {
+      const timer = setInterval(() => {
         setCountdown((prev) => prev - 1);
       }, 1000);
-    return () => clearInterval(timer as NodeJS.Timeout);
+      return () => clearInterval(timer);
+    }
   }, [countdown]);
 
   useEffect(() => {
@@ -45,18 +44,19 @@ export default function ConfirmOTPScreen() {
     try {
       const storedEmail = emailParam || (await AsyncStorage.getItem("otpEmail"));
       if (!storedEmail) {
-        Alert.alert("Error", "No email found. Please restart the login process.");
+        Alert.alert("Error", "No email found. Please restart login.");
         return;
       }
 
       const result = await verifyOTP({ email: storedEmail, code: otp });
-    if (result?.success) {
-  navigation.reset({
-    index: 0,
-    routes: [{ name: "Main", params: { screen: "Home" } }],
-  });
-}
 
+      if (result?.success) {
+        // ✅ Just reset to Main. AppNavigator decides Admin vs User
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Main" }],
+        });
+      }
     } catch (err) {
       console.error("OTP verification error:", err);
     }
@@ -105,7 +105,6 @@ export default function ConfirmOTPScreen() {
           keyboardType="number-pad"
           style={styles.input}
           maxLength={5}
-          theme={inputTheme}
           left={<TextInput.Icon icon="shield-check" color="#ff7900" />}
         />
 
@@ -137,69 +136,15 @@ export default function ConfirmOTPScreen() {
   );
 }
 
-const inputTheme = {
-  roundness: 10,
-  colors: {
-    primary: "#ff7900",
-    background: "#ffffff",
-    placeholder: "#94a3b8",
-    text: "#1e293b",
-  },
-};
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-    justifyContent: "center",
-    backgroundColor: "#f8fafc",
-  },
-  logo: {
-    height: 100,
-    width: 100,
-    alignSelf: "center",
-    marginBottom: 16,
-  },
-  title: {
-    fontWeight: "bold",
-    marginBottom: 8,
-    textAlign: "center",
-    color: "#2563eb",
-  },
-  subtitle: {
-    marginBottom: 32,
-    textAlign: "center",
-    color: "#1e293b",
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 24,
-    elevation: 4,
-  },
-  input: {
-    marginBottom: 16,
-  },
-  button: {
-    marginTop: 8,
-    borderRadius: 10,
-    height: 48,
-    justifyContent: "center",
-    backgroundColor: "#ff7900",
-  },
-  footer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 24,
-  },
-  footerText: {
-    color: "#64748b",
-  },
-  resendLink: {
-    color: "#ff7900",
-    fontWeight: "600",
-    marginLeft: 4,
-  },
+  container: { flex: 1, paddingHorizontal: 24, justifyContent: "center", backgroundColor: "#f8fafc" },
+  logo: { height: 100, width: 100, alignSelf: "center", marginBottom: 16 },
+  title: { fontWeight: "bold", marginBottom: 8, textAlign: "center", color: "#2563eb" },
+  subtitle: { marginBottom: 32, textAlign: "center", color: "#1e293b" },
+  card: { backgroundColor: "#fff", borderRadius: 12, padding: 24, elevation: 4 },
+  input: { marginBottom: 16 },
+  button: { marginTop: 8, borderRadius: 10, height: 48, justifyContent: "center", backgroundColor: "#ff7900" },
+  footer: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 24 },
+  footerText: { color: "#64748b" },
+  resendLink: { color: "#ff7900", fontWeight: "600", marginLeft: 4 },
 });

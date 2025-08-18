@@ -53,7 +53,7 @@ const HomeScreen: React.FC = () => {
           <Card.Content style={styles.centerContent}>
             <Icon name="book-open-variant" size={32} color="#1d4ed8" />
             <Title style={styles.statTitle}>10</Title>
-            <Paragraph style={styles.statLabel}>Enrolled Courses2</Paragraph>
+            <Paragraph style={styles.statLabel}>Enrolled Courses</Paragraph>
           </Card.Content>
         </Card>
 
