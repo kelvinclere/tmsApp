@@ -9,7 +9,7 @@ interface CustomJwtPayload extends JwtPayload {
   user_id?: string;
   full_name?: string;
   email?: string;
-  role?: "admin" | "user";
+  role?: "super_admin" | "admin" | "user";
   pfl?: boolean;
 }
 
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authChecked, setAuthChecked] = useState(false);
 
   const navigation = useNavigation<any>();
-  const BASE_URL = "https://04fca990ec09.ngrok-free.app";
+  const BASE_URL = "https://e1ff35ecf00f.ngrok-free.app";
 
   const clearError = () => setError(null);
 
@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = await AsyncStorage.getItem("accessToken");
       if (token && !isTokenExpired(token)) {
         const decoded = jwtDecode<CustomJwtPayload>(token);
+        console.log("🔑 Loaded user from token:", decoded); // ✅ log decoded token
         setUserInfo(decoded);
         setIsAuthenticated(true);
       } else {
@@ -96,6 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const response = await axiosInstance.post(`${BASE_URL}/v1/cemastea/register`, data);
+      console.log("📩 Register response:", response.data); // ✅ log response
       const responseData = response.data as AuthResponse;
       if (responseData.success) {
         Alert.alert("Success", formatErrorMessage(responseData.data?.response || "Registration successful!"));
@@ -128,6 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         { email: credentials.email, password: credentials.password }
       );
 
+      console.log("📩 Login response:", response.data); // ✅ log raw response
       const data = response.data as AuthResponse;
 
       if (data.success) {
@@ -159,6 +162,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const response = await axiosInstance.post(`${BASE_URL}/api/v1/auth/2fa`, credentials);
+      console.log("📩 Verify OTP response:", response.data); // ✅ log raw response
       const data = response.data as any;
       const tokens = data?.response;
 
@@ -169,17 +173,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
 
         const decoded = jwtDecode<CustomJwtPayload>(tokens.token);
+        console.log("🔑 Decoded token after OTP:", decoded); // ✅ log decoded JWT
         setUserInfo(decoded);
         setIsAuthenticated(true);
 
         Alert.alert("Success", "Login successful!");
 
-        // ✅ Reset navigation to correct stack based on role
+        // ✅ Reset navigation to Main
         navigation.reset({
           index: 0,
-          routes: [
-            { name: decoded.role === "admin" ? "AdminDrawer" : "UserDrawer" }
-          ],
+          routes: [{ name: "Main" }],
         });
 
         return { success: true, message: "Login successful!" };
@@ -207,6 +210,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const response = await axiosInstance.post(`${BASE_URL}/api/v1/auth/2fa`, { email });
+      console.log("📩 Resend OTP response:", response.data); // ✅ log response
       const data = response.data as AuthResponse;
       if (data.success) {
         Alert.alert("OTP Sent", "A new code has been sent to your email.");

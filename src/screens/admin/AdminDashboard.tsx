@@ -1,59 +1,123 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Text, Button, Card } from "react-native-paper";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
+import { Card, Text, ActivityIndicator } from "react-native-paper";
 
-export default function AdminDashboard() {
+export default function Dashboard() {
+  const [loading, setLoading] = useState(true);
+
+  const [data, setData] = useState({
+    users: 120,
+    trainings: 25,
+    facilitators: 18,
+    sessions: 42,
+  });
+
+  useEffect(() => {
+    // Simulate API fetching
+    setTimeout(() => setLoading(false), 1200);
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator animating color="#ff7900" size="large" />
+        <Text>Loading Dashboard...</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Admin Dashboard</Text>
 
-      <Card style={styles.card}>
+      {/* KPI Cards */}
+      <View style={styles.cardRow}>
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.metric}>{data.users}</Text>
+            <Text>Users</Text>
+          </Card.Content>
+        </Card>
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.metric}>{data.trainings}</Text>
+            <Text>Trainings</Text>
+          </Card.Content>
+        </Card>
+      </View>
+
+      <View style={styles.cardRow}>
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.metric}>{data.facilitators}</Text>
+            <Text>Facilitators</Text>
+          </Card.Content>
+        </Card>
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.metric}>{data.sessions}</Text>
+            <Text>Sessions</Text>
+          </Card.Content>
+        </Card>
+      </View>
+
+      {/* Recent Reports Section */}
+      <Card style={styles.reportCard}>
+        <Card.Title title="Recent Reports" />
         <Card.Content>
-          <Text>Manage Users</Text>
+          <Text>- 5 new trainings completed last week</Text>
+          <Text>- 12 new users registered</Text>
+          <Text>- 3 sessions scheduled for this week</Text>
         </Card.Content>
       </Card>
 
-      <Card style={styles.card}>
+      {/* Quick Actions */}
+      <Card style={styles.reportCard}>
+        <Card.Title title="Quick Actions" />
         <Card.Content>
-          <Text>View Reports</Text>
+          <Text>✔ Create Training</Text>
+          <Text>✔ Add New User</Text>
+          <Text>✔ Assign Facilitator</Text>
+          <Text>✔ Review Sessions</Text>
         </Card.Content>
       </Card>
-
-      <Card style={styles.card}>
-        <Card.Content>
-          <Text>System Settings</Text>
-        </Card.Content>
-      </Card>
-
-      <Button
-        mode="contained"
-        style={styles.logoutButton}
-        onPress={() => console.log("Logout pressed")}
-      >
-        Logout
-      </Button>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, backgroundColor: "#f9f9f9" },
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 16,
+    padding: 16,
+    color: "#ff7900",
+  },
+  cardRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    marginBottom: 10,
   },
   card: {
-    marginBottom: 12,
+    flex: 1,
+    marginHorizontal: 5,
+    padding: 10,
     borderRadius: 12,
+    backgroundColor: "white",
     elevation: 2,
   },
-  logoutButton: {
-    marginTop: 20,
-    backgroundColor: "#ff7900",
+  metric: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#ff7900",
+  },
+  reportCard: {
+    margin: 16,
+    borderRadius: 12,
+    backgroundColor: "white",
+    elevation: 2,
+    paddingBottom: 10,
   },
 });

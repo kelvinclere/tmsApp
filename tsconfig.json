@@ -3,18 +3,21 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
     "paths": {
       "@components/*": ["./components/*"],
       "@screens/*": ["./screens/*"],
       "@navigation/*": ["./navigation/*"],
       "@constants/*": ["./constants/*"]
-    }
+    },
+    "types": ["react", "react-native"]
   },
   "include": [
+    "env.d.ts",    
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx"
-  ],
-  "exclude": ["node_modules"]
+  ]
 }
