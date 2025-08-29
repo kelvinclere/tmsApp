@@ -12,13 +12,29 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to your camera to capture photos.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photos to upload images.",
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to improve functionality."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/splash-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "RECORD_AUDIO"
+      ]
+    },
+    "extra": {
+      "API_BASE_URL": "https://pharmacology-recent-pairs-commodities.trycloudflare.com"
     }
   }
 }

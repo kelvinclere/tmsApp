@@ -6,15 +6,17 @@
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "paths": {
-      "@components/*": ["./components/*"],
-      "@screens/*": ["./screens/*"],
-      "@navigation/*": ["./navigation/*"],
-      "@constants/*": ["./constants/*"]
+      "@/*": ["src/*"],
+      "@components/*": ["./src/components/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@navigation/*": ["./src/navigation/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@configs/*": ["./src/configs/*"]
     },
     "types": ["react", "react-native"]
   },
   "include": [
-    "env.d.ts",    
+    "env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",

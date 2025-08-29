@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authChecked, setAuthChecked] = useState(false);
 
   const navigation = useNavigation<any>();
-  const BASE_URL = "https://e1ff35ecf00f.ngrok-free.app";
+  const BASE_URL = "https://pharmacology-recent-pairs-commodities.trycloudflare.com";
 
   const clearError = () => setError(null);
 
@@ -73,13 +73,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // 🔹 Load user if token exists
   useEffect(() => {
     const loadUser = async () => {
       const token = await AsyncStorage.getItem("accessToken");
       if (token && !isTokenExpired(token)) {
         const decoded = jwtDecode<CustomJwtPayload>(token);
-        console.log("🔑 Loaded user from token:", decoded); // ✅ log decoded token
+        console.log("🔑 Loaded user from token:", decoded);
         setUserInfo(decoded);
         setIsAuthenticated(true);
       } else {
@@ -91,13 +90,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadUser();
   }, []);
 
-  // 🔹 Register
   const register = async (data: any): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
     try {
       const response = await axiosInstance.post(`${BASE_URL}/v1/cemastea/register`, data);
-      console.log("📩 Register response:", response.data); // ✅ log response
+      console.log("📩 Register response:", response.data); 
       const responseData = response.data as AuthResponse;
       if (responseData.success) {
         Alert.alert("Success", formatErrorMessage(responseData.data?.response || "Registration successful!"));
@@ -120,7 +118,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // 🔹 Login (send OTP)
   const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
@@ -130,7 +127,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         { email: credentials.email, password: credentials.password }
       );
 
-      console.log("📩 Login response:", response.data); // ✅ log raw response
+      console.log("📩 Login response:", response.data);
       const data = response.data as AuthResponse;
 
       if (data.success) {
@@ -156,13 +153,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // 🔹 Verify OTP → Save tokens & role
   const verifyOTP = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
     try {
       const response = await axiosInstance.post(`${BASE_URL}/api/v1/auth/2fa`, credentials);
-      console.log("📩 Verify OTP response:", response.data); // ✅ log raw response
+      console.log("📩 Verify OTP response:", response.data); 
       const data = response.data as any;
       const tokens = data?.response;
 
@@ -173,13 +169,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
 
         const decoded = jwtDecode<CustomJwtPayload>(tokens.token);
-        console.log("🔑 Decoded token after OTP:", decoded); // ✅ log decoded JWT
+        console.log("🔑 Decoded token after OTP:", decoded); 
         setUserInfo(decoded);
         setIsAuthenticated(true);
 
         Alert.alert("Success", "Login successful!");
 
-        // ✅ Reset navigation to Main
         navigation.reset({
           index: 0,
           routes: [{ name: "Main" }],
@@ -204,13 +199,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // 🔹 Resend OTP
   const loginCode = async ({ email }: { email: string }): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
     try {
       const response = await axiosInstance.post(`${BASE_URL}/api/v1/auth/2fa`, { email });
-      console.log("📩 Resend OTP response:", response.data); // ✅ log response
+      console.log("📩 Resend OTP response:", response.data); 
       const data = response.data as AuthResponse;
       if (data.success) {
         Alert.alert("OTP Sent", "A new code has been sent to your email.");
@@ -232,7 +226,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // 🔹 Logout
+
   const handleLogout = async () => {
     setUserInfo(null);
     setIsAuthenticated(false);

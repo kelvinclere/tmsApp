@@ -33,17 +33,16 @@ export default function LoginScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../assets/images/icon.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
-
-      <Text variant="headlineMedium" style={[styles.title, { color: '#2563eb' }]}>
-        Welcome Back
-      </Text>
-
       <View style={styles.card}>
+        <Text variant="headlineMedium" style={[styles.cardTitle, { color: '#2563eb' }]}>
+          Welcome Back
+        </Text>
+        <Image
+          source={require('../../assets/images/icon.png')}
+          style={styles.cardLogo}
+          resizeMode="contain"
+        />
+
         <TextInput
           label="Email"
           value={email}
@@ -116,11 +115,11 @@ const inputTheme = {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 24, paddingVertical: 32, justifyContent: 'center' },
-  logo: { height: 120, width: 120, alignSelf: 'center', marginBottom: 24 },
-  title: { fontWeight: 'bold', marginBottom: 8, textAlign: 'center' },
-  card: { backgroundColor: '#ffffff', borderRadius: 12, padding: 24, elevation: 4 },
-  input: { marginBottom: 16, backgroundColor: '#ffffff' },
-  button: { marginTop: 8, borderRadius: 10, height: 48, justifyContent: 'center', backgroundColor: '#f97316' },
+  card: { backgroundColor: '#ffffff', borderRadius: 12, padding: 24, elevation: 4, alignItems: 'center' },
+  cardTitle: { fontWeight: 'bold', marginBottom: 16, textAlign: 'center' }, 
+  cardLogo: { height: 100, width: 140, alignSelf: 'center', marginBottom: 50 },
+  input: { marginBottom: 16, backgroundColor: '#ffffff', width: '100%' },
+  button: { marginTop: 8, borderRadius: 10, height: 48, justifyContent: 'center', backgroundColor: '#f97316', width: '100%' },
   footer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 24 },
   link: { marginLeft: 4 },
 });

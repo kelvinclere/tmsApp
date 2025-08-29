@@ -62,20 +62,19 @@ export default function RegisterScreen({ navigation }: Props) {
 
   return (
     <View style={[styles.container, { backgroundColor: "#f8fafc" }]}>
-      <Image
-        source={require("../../assets/images/icon.png")}
-        style={styles.logo}
-        resizeMode="contain"
-      />
-
-      <Text
-        variant="headlineMedium"
-        style={[styles.title, { color: "#2563eb" }]}
-      >
-        Create Account
-      </Text>
-
       <View style={styles.card}>
+        <Text
+          variant="headlineMedium"
+          style={[styles.cardTitle, { color: "#2563eb" }]}
+        >
+          Create Account
+        </Text>
+        <Image
+          source={require("../../assets/images/icon.png")}
+          style={styles.cardLogo}
+          resizeMode="contain"
+        />
+
         <TextInput
           label="First Name"
           value={firstName}
@@ -183,21 +182,24 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
     justifyContent: "center",
   },
-  logo: { height: 120, width: 120, alignSelf: "center", marginBottom: 24 },
-  title: { fontWeight: "bold", marginBottom: 8, textAlign: "center" },
+ 
   card: {
     backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 24,
     elevation: 4,
+    alignItems: "center", 
   },
-  input: { marginBottom: 16, backgroundColor: "#ffffff" },
+  cardTitle: { fontWeight: "bold", marginBottom: -6, textAlign: "center" }, 
+  cardLogo: { height: 140, width: 140, alignSelf: "center", marginBottom: 10 },
+  input: { marginBottom: 16, backgroundColor: "#ffffff", width: "100%" },
   button: {
     marginTop: 8,
     borderRadius: 10,
     height: 48,
     justifyContent: "center",
     backgroundColor: "#f97316",
+    width: "100%",
   },
   footer: {
     flexDirection: "row",

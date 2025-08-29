@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://e1ff35ecf00f.ngrok-free.app',
+  baseURL: 'https://peoples-forge-sixth-favorite.trycloudflare.com',
   headers: {
     'Content-Type': 'application/json',
   },
